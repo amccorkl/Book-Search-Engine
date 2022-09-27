@@ -1,16 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
-//createHttpLink would be to have a graphql api endpoint
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
-
-//if using the graphql api endpoint, but using the inMemoryCache connection instead
-// const httpLink = createHttpLink({
-//   uri: '/graphql',
-// });
 
 const client = new ApolloClient({
   uri: '/graphql',
@@ -18,7 +12,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-//
+//Reworking to add the new ApolloProvider 
 function App() {
   return (
     <ApolloProvider client={client}>
