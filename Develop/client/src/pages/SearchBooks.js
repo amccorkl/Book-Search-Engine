@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'react-bootstrap';
 import Auth from '../utils/auth';
-//this is from the api...don't need??
 import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import { SAVE_BOOK } from '../utils/mutations';
@@ -33,7 +32,7 @@ const SearchBooks = () => {
     }
 
     try {
-      //my fetch call from api require at top
+      //my fetch call from api require at t
       const response = await searchGoogleBooks(searchInput);
 
       if (!response.ok) {
