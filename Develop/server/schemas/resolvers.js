@@ -7,9 +7,9 @@ const resolvers = {
     //get the current logged in user 
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id });
+        return User.findOne({ _id: context.user._id }).populate('thoughts');
       }
-      throw new AuthenticationError('You need to be logged in first.');
+      throw new AuthenticationError('You need to be logged in!');
     },
   },
 
@@ -17,10 +17,6 @@ const resolvers = {
     //create a user, token, and send back to client 
     addUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
-      
-      if (!user) {
-        return res.status(400).json({ message: "error" });
-      }
       const token = signToken(user);
       return { token, user };
     },
@@ -42,14 +38,18 @@ const resolvers = {
       return { token, user };
     },
 
-    // save a book to the user's savedBooks args field using context  
+    // can access the data using context  
     saveBook: async (parent, { book }, context) => {
       //if context has a 'user' property, that means th euser executing this mutation has a valid JWT and is logged in
       console.log(context);
       if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedBooks: book } },
+          {
+            $addToSet: {
+              savedBooks: {
+                book
+          }} },
           { new: true, runValidators: true }
         );
         return updatedUser;
@@ -59,18 +59,18 @@ const resolvers = {
     },
 
     //set up mutation so a logged in user can only remove their books 
-    removeBook: async (parent, { bookId }, context) => {
-      console.log(context);
+    removeBook: async (parent, { book }) => {
       if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $pull: { savedBooks: { bookId } } },
-          { new: true }
-        );
+          
+            { _id: context.user._id },
+            { $pull: { savedBooks: { bookId: book.bookId } } },
+            { new: true }
+          );
+        
+      }
         return updatedUser;
       }
-      throw new AuthenticationError("You need to be logged in first to complete this action.");
-    },
   },
 };
 
