@@ -67,12 +67,12 @@ const SearchBooks = () => {
     if (!token) {
       return false;
     }
-
+console.log(bookToSave);
 
     try {
       // const response = await saveBook(bookToSave, token);
       const { data } = await saveBook({
-        variables: { bookToSave }
+        variables: { ...bookToSave }
       });
       console.log(data, "post try-catch");
 

@@ -7,12 +7,10 @@ const resolvers = {
     //get the current logged in user 
     me: async (parent, args, context) => {
       if (context.user) {
-        const userData = await User.findOne({ _id: context.user._id }).select('-__v -password');
-        
-        return userData;
+        return Profile.findOne({ _id: context.user._id });
       }
       throw new AuthenticationError('You need to be logged in!');
-    }
+    },
   },
 
   Mutation: {
@@ -41,14 +39,14 @@ const resolvers = {
       return { token, user };
     },
     // can access the data using context  
-    saveBook: async (parent, { input }, context) => {
-      //if context has a 'user' property, that means th euser executing this mutation has a valid JWT and is logged in
-      console.log(context);
+    saveBook: async (parent, args, context) => {
+      //if context has a 'user' property, that means the user executing this mutation has a valid JWT and is logged in
+      console.log(context, args, "args");
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
           {
-            $addToSet: { savedBooks: input } },
+            $addToSet: { savedBooks: args } },
           { new: true, runValidators: true }
         );
         return updatedUser;
