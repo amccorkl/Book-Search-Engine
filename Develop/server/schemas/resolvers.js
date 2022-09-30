@@ -7,7 +7,7 @@ const resolvers = {
     //get the current logged in user 
     me: async (parent, args, context) => {
       if (context.user) {
-        return Profile.findOne({ _id: context.user._id });
+        return User.findOne({ _id: context.user._id });
       }
       throw new AuthenticationError('You need to be logged in!');
     },
@@ -58,6 +58,7 @@ const resolvers = {
     //set up mutation so a logged in user can only remove their books 
     removeBook: async (parent, { bookId }, context) => {
       if (context.user) {
+        //should this be findByIdAndRemove?
         const updatedUser = await User.findByIdAndUpdate(
           
             { _id: context.user._id },
